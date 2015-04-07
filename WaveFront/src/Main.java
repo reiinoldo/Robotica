@@ -8,7 +8,32 @@ public class Main {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		cenario2();
+		// cenario2(); +- 
+		cenarioA();
+	}
+	
+	public static void cenarioA(){
+		iniciarObstaculos();
+		iniciarObjetivo();
+		iniciarRobo();		
+		showConsole();
+		
+		valoraQuadrante3(2, 5);
+        valoraQuadrante4(2, 5);
+		
+        showConsole();
+	}
+	
+	public static void cenarioB(){
+		iniciarObstaculos();
+		iniciarObjetivo();
+		iniciarRobo();		
+		showConsole();
+		
+		valoraQuadrante3(2, 5);
+        valoraQuadrante4(2, 5);
+		
+        showConsole();
 	}
 	
     public static void cenario2(){
@@ -22,16 +47,29 @@ public class Main {
         //---------------
         
         //Objetivo
-        matriz[2][5] = 2;
+        matriz[3][5] = 2;
         //--------
         
         //Robo
         matriz[6][0] = 99;
         //---------------        
-        valoraQuadrante3(2, 5);
-        valoraQuadrante4(2, 5);
+        valoraQuadrante3(3, 5);
+        valoraQuadrante4(3, 5);
         
-        String temp = "        ";
+        showConsole();
+        
+        
+//        for (int i = 0; i < matriz.length; i++) {
+//            for (int j = 0; j < matriz[0].length; j++) {
+//                System.out.print("Linha: " + i);
+//                System.out.print("   Coluna: " + j);
+//                System.out.println("  Matriz: " + matriz[i][j]);
+//            }
+//        }        
+    }	
+    
+    public static void showConsole(){
+    	String temp = "        ";
         
         for (int j = 0; j < matriz[0].length; j++) {
         	temp +="   Coluna: " + j;
@@ -49,17 +87,10 @@ public class Main {
             }
             System.out.println(temp);
         }       
-        
-//        for (int i = 0; i < matriz.length; i++) {
-//            for (int j = 0; j < matriz[0].length; j++) {
-//                System.out.print("Linha: " + i);
-//                System.out.print("   Coluna: " + j);
-//                System.out.println("  Matriz: " + matriz[i][j]);
-//            }
-//        }        
-    }	
+    }
+    
 	
-	public void iniciarObstaculos(){		
+	public static void iniciarObstaculos(){		
 		//Linha X Coluna
 		matriz[0][1] = -1;
 		matriz[1][3] = -1;
@@ -72,11 +103,11 @@ public class Main {
 		matriz[6][5] = -1;		
 	}	
 	
-	public void iniciarObjetivo(){
+	public static void iniciarObjetivo(){
 		matriz[2][5] = 2;
 	}
 
-	public void iniciarRobo(){
+	public static void iniciarRobo(){
 		matriz[6][0] = 99;
 	}
 	
@@ -194,7 +225,7 @@ public class Main {
 //						matriz[j - 1][i] = matriz[j][i] - 1;
 //				} catch(Exception ex){                    
 //				}   
-				if (ok)
+				
 					valor++;
 			}
 		}
@@ -209,26 +240,26 @@ public class Main {
                 }
                 
                 try{
-                    if((matriz[j][i + 1] == 0 || (matriz[j][i + 1] > valor + 1)) && j < 2 )
+                    if((matriz[j][i + 1] == 0 || (matriz[j][i + 1] > valor + 1))  )
                         matriz[j][i + 1] = matriz[j][i] + 1;
                 } catch(Exception ex){                    
                 }
                 
                 try{
-                    if((matriz[j + 1][i] == 0 || (matriz[j + 1][i] > valor + 1)) && j < 2)
+                    if((matriz[j + 1][i] == 0 || (matriz[j + 1][i] > valor + 1)) && j < linha)
                         matriz[j + 1][i] = matriz[j][i] + 1;
                 } catch(Exception ex){                  
                 }
                 
                 try{
-                    if((matriz[j][i - 1] == 0 || (matriz[j][i - 1] > valor + 1)) && j < 2)
+                    if((matriz[j][i - 1] == 0 || (matriz[j][i - 1] > valor + 1)) )
                         matriz[j][i - 1] = matriz[j][i] + 1;
                 } catch(Exception ex){                    
                 }
                 
                 try{
-                    if((matriz[j + 1][i] == 0 || (matriz[j + 1][i] > valor + 1)) && j < 2)
-                        matriz[j + 1][i] = matriz[j][i] + 1;
+                    if((matriz[j - 1][i] == 0 || (matriz[j - 1][i] > valor + 1)) )
+                        matriz[j - 1][i] = matriz[j][i] + 1;
                 } catch(Exception ex){                    
                 }   
                 valor++;
