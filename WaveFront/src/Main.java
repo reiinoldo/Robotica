@@ -3,19 +3,34 @@ public class Main {
 
 	private static int LINHA = 7;
 	private static int COLUNA = 6;
+	private static final int ROBO = 99;
 	
 	private static int[][] matriz = new int[LINHA][COLUNA];
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		// cenario2(); +- 
-		cenarioA();
+		// cenarioA();
+		cenarioB();
 	}
 	
 	public static void cenarioA(){
-		iniciarObstaculos();
-		iniciarObjetivo();
-		iniciarRobo();		
+		// iniciar obstaculos | Linha X Coluna
+		matriz[0][1] = -1;
+		matriz[1][3] = -1;
+		matriz[2][4] = -1;
+		matriz[3][2] = -1;
+		matriz[4][4] = -1;
+		matriz[5][0] = -1;
+		matriz[5][2] = -1;
+		matriz[6][3] = -1;
+		matriz[6][5] = -1;
+		
+		// iniciar objetivo();
+		matriz[2][5] = 2;
+		
+		// iniciar robo
+		matriz[6][0] = ROBO;	
 		showConsole();
 		
 		valoraQuadrante3(2, 5);
@@ -25,13 +40,24 @@ public class Main {
 	}
 	
 	public static void cenarioB(){
-		iniciarObstaculos();
-		iniciarObjetivo();
-		iniciarRobo();		
+		// iniciar obstaculos | Linha X Coluna		
+		matriz[1][2] = -1;
+		matriz[2][3] = -1;
+		matriz[3][1] = -1;
+		matriz[3][4] = -1;
+		matriz[4][2] = -1;		
+		matriz[5][4] = -1;		
+		matriz[6][3] = -1;		
+		
+		// iniciar objetivo();
+		matriz[6][5] = 2;
+		
+		// iniciar robo
+		matriz[3][0] = ROBO;
+		
 		showConsole();
 		
-		valoraQuadrante3(2, 5);
-        valoraQuadrante4(2, 5);
+        valoraQuadrante4(6, 5);
 		
         showConsole();
 	}
@@ -51,7 +77,7 @@ public class Main {
         //--------
         
         //Robo
-        matriz[6][0] = 99;
+        matriz[6][0] = ROBO;
         //---------------        
         valoraQuadrante3(3, 5);
         valoraQuadrante4(3, 5);
@@ -89,28 +115,10 @@ public class Main {
         }       
     }
     
-	
-	public static void iniciarObstaculos(){		
-		//Linha X Coluna
-		matriz[0][1] = -1;
-		matriz[1][3] = -1;
-		matriz[2][4] = -1;
-		matriz[3][2] = -1;
-		matriz[4][4] = -1;
-		matriz[5][0] = -1;
-		matriz[5][2] = -1;
-		matriz[6][3] = -1;
-		matriz[6][5] = -1;		
-	}	
-	
-	public static void iniciarObjetivo(){
-		matriz[2][5] = 2;
-	}
-
-	public static void iniciarRobo(){
-		matriz[6][0] = 99;
-	}
-	
+    public static boolean posicaoRobo(int linha, int coluna){
+    	return matriz[linha][coluna] == ROBO;
+    }
+    
 	public static void valoraQuadrante1(int linha, int coluna){
 		int valor = 1;
 		for (int i = coluna; i >= 0; i--) {
@@ -202,7 +210,7 @@ public class Main {
 	                
 				// \/
 				try{
-					if(matriz[j + 1][i] == 0 || (matriz[j + 1][i] > valor + 1)){
+					if((matriz[j + 1][i] == 0 || (matriz[j + 1][i] > valor + 1)) && !posicaoRobo(j + 1, i)){
 						matriz[j + 1][i] = matriz[j][i] + 1;
 						ok = true;
 					}	
@@ -211,7 +219,7 @@ public class Main {
 	                
 				// <<
 				try{
-					if(matriz[j][i - 1] == 0 || (matriz[j][i - 1] > valor + 1)){
+					if((matriz[j][i - 1] == 0 || (matriz[j][i - 1] > valor + 1)) && !posicaoRobo(j, i - 1)){
 						matriz[j][i - 1] = matriz[j][i] + 1;
 						ok = true;
 					}
@@ -239,26 +247,30 @@ public class Main {
                     matriz[j][i] = valor;
                 }
                 
-                try{
-                    if((matriz[j][i + 1] == 0 || (matriz[j][i + 1] > valor + 1))  )
-                        matriz[j][i + 1] = matriz[j][i] + 1;
-                } catch(Exception ex){                    
-                }
+//                // >>
+//                try{
+//                    if((matriz[j][i + 1] == 0 || (matriz[j][i + 1] > valor + 1))  )
+//                        matriz[j][i + 1] = matriz[j][i] + 1;
+//                } catch(Exception ex){                    
+//                }
+//                
+//                // \/
+//                try{
+//                    if((matriz[j + 1][i] == 0 || (matriz[j + 1][i] > valor + 1)) && j < linha)
+//                        matriz[j + 1][i] = matriz[j][i] + 1;
+//                } catch(Exception ex){                  
+//                }
                 
+                // <<
                 try{
-                    if((matriz[j + 1][i] == 0 || (matriz[j + 1][i] > valor + 1)) && j < linha)
-                        matriz[j + 1][i] = matriz[j][i] + 1;
-                } catch(Exception ex){                  
-                }
-                
-                try{
-                    if((matriz[j][i - 1] == 0 || (matriz[j][i - 1] > valor + 1)) )
+                    if((matriz[j][i - 1] == 0 || (matriz[j][i - 1] > valor + 1))  && !posicaoRobo(j, i - 1))
                         matriz[j][i - 1] = matriz[j][i] + 1;
                 } catch(Exception ex){                    
                 }
                 
+                // /\
                 try{
-                    if((matriz[j - 1][i] == 0 || (matriz[j - 1][i] > valor + 1)) )
+                    if((matriz[j - 1][i] == 0 || (matriz[j - 1][i] > valor + 1))  && !posicaoRobo(j - 1, i))
                         matriz[j - 1][i] = matriz[j][i] + 1;
                 } catch(Exception ex){                    
                 }   
