@@ -4,6 +4,8 @@ public class Main {
 	private static int LINHA = 7;
 	private static int COLUNA = 6;
 	private static final int ROBO = 99;
+	private static final int ORIGEM = 2;
+	private static final int OBSTACULO = -1;
 	
 	private static int[][] matriz = new int[LINHA][COLUNA];
 	
@@ -16,18 +18,18 @@ public class Main {
 	
 	public static void cenarioA(){
 		// iniciar obstaculos | Linha X Coluna
-		matriz[0][1] = -1;
-		matriz[1][3] = -1;
-		matriz[2][4] = -1;
-		matriz[3][2] = -1;
-		matriz[4][4] = -1;
-		matriz[5][0] = -1;
-		matriz[5][2] = -1;
-		matriz[6][3] = -1;
-		matriz[6][5] = -1;
+		matriz[0][1] = OBSTACULO;
+		matriz[1][3] = OBSTACULO;
+		matriz[2][4] = OBSTACULO;
+		matriz[3][2] = OBSTACULO;
+		matriz[4][4] = OBSTACULO;
+		matriz[5][0] = OBSTACULO;
+		matriz[5][2] = OBSTACULO;
+		matriz[6][3] = OBSTACULO;
+		matriz[6][5] = OBSTACULO;
 		
-		// iniciar objetivo();
-		matriz[2][5] = 2;
+		// iniciar objetivo
+		matriz[2][5] = ORIGEM;
 		
 		// iniciar robo
 		matriz[6][0] = ROBO;	
@@ -41,16 +43,16 @@ public class Main {
 	
 	public static void cenarioB(){
 		// iniciar obstaculos | Linha X Coluna		
-		matriz[1][2] = -1;
-		matriz[2][3] = -1;
-		matriz[3][1] = -1;
-		matriz[3][4] = -1;
-		matriz[4][2] = -1;		
-		matriz[5][4] = -1;		
-		matriz[6][3] = -1;		
+		matriz[1][2] = OBSTACULO;
+		matriz[2][3] = OBSTACULO;
+		matriz[3][1] = OBSTACULO;
+		matriz[3][4] = OBSTACULO;
+		matriz[4][2] = OBSTACULO;		
+		matriz[5][4] = OBSTACULO;		
+		matriz[6][3] = OBSTACULO;		
 		
-		// iniciar objetivo();
-		matriz[6][5] = 2;
+		// iniciar objetivo
+		matriz[6][5] = ORIGEM;
 		
 		// iniciar robo
 		matriz[3][0] = ROBO;
@@ -64,16 +66,16 @@ public class Main {
 	
     public static void cenario2(){
         //Obstaculos
-        matriz[1][3] = -1;
-        matriz[2][3] = -1;
-        matriz[3][3] = -1;
-        matriz[4][3] = -1;
-        matriz[5][3] = -1;
-        matriz[6][3] = -1;
+        matriz[1][3] = OBSTACULO;
+        matriz[2][3] = OBSTACULO;
+        matriz[3][3] = OBSTACULO;
+        matriz[4][3] = OBSTACULO;
+        matriz[5][3] = OBSTACULO;
+        matriz[6][3] = OBSTACULO;
         //---------------
         
         //Objetivo
-        matriz[3][5] = 2;
+        matriz[3][5] = ORIGEM;
         //--------
         
         //Robo
@@ -117,6 +119,51 @@ public class Main {
     
     public static boolean posicaoRobo(int linha, int coluna){
     	return matriz[linha][coluna] == ROBO;
+    }
+    
+    public static int getPosicaoEsquerda(int linha, int coluna){
+    	try {
+    		return matriz[linha][coluna -1];
+		} catch (Exception e) {
+			return -1;
+		}    			
+    }
+    
+    public static int getPosicaoDireita(int linha, int coluna){
+    	try {
+    		return matriz[linha][coluna +1];
+		} catch (Exception e) {
+			return -1;
+		}    			
+    }
+    
+    public static int getPosicaoAbaixo(int linha, int coluna){
+    	try {
+    		return matriz[linha + 1][coluna];
+	    } catch (Exception e) {
+			return -1;
+		}
+    }
+    
+    public static int getPosicaoAcima(int linha, int coluna){
+    	try {
+    		return matriz[linha - 1][coluna];
+	    } catch (Exception e) {
+			return -1;
+		}
+    }
+    
+    
+    public static void setPosicaoEsquerda(int linha, int coluna){
+    	matriz[linha][coluna -1] = matriz[linha][coluna] + 1;    			
+    }
+    
+    public static void setPosicaoAbaixo(int linha, int coluna){
+    	matriz[linha + 1][coluna] = matriz[linha][coluna] + 1;    	
+    }
+    
+    public static void setPosicaoAcima(int linha, int coluna){
+    	matriz[linha - 1][coluna] = matriz[linha][coluna] + 1;	    
     }
     
 	public static void valoraQuadrante1(int linha, int coluna){
@@ -209,23 +256,20 @@ public class Main {
 //				}
 	                
 				// \/
-				try{
-					if((matriz[j + 1][i] == 0 || (matriz[j + 1][i] > valor + 1)) && !posicaoRobo(j + 1, i)){
-						matriz[j + 1][i] = matriz[j][i] + 1;
+				
+					if((getPosicaoAbaixo(j, i) == 0 || (getPosicaoAbaixo(j, i) > valor + 1)) && !posicaoRobo(j + 1, i)){
+						setPosicaoAbaixo(j, i);
 						ok = true;
 					}	
-				} catch(Exception ex){                  
-				}
+				
 	                
 				// <<
-				try{
-					if((matriz[j][i - 1] == 0 || (matriz[j][i - 1] > valor + 1)) && !posicaoRobo(j, i - 1)){
-						matriz[j][i - 1] = matriz[j][i] + 1;
+				
+					if((getPosicaoEsquerda(j, i) == 0 || (getPosicaoEsquerda(j, i) > valor + 1)) && !posicaoRobo(j, i - 1)){
+						setPosicaoEsquerda(j, i);
 						ok = true;
 					}
-						
-				} catch(Exception ex){                    
-				}
+				
 	                
 				// /\
 //				try{
@@ -262,24 +306,60 @@ public class Main {
 //                }
                 
                 // <<
-                try{
-                    if((matriz[j][i - 1] == 0 || (matriz[j][i - 1] > valor + 1))  && !posicaoRobo(j, i - 1))
-                        matriz[j][i - 1] = matriz[j][i] + 1;
-                } catch(Exception ex){                    
-                }
+                
+                    if((getPosicaoEsquerda(j, i) == 0 || (getPosicaoEsquerda(j, i) > valor + 1))  && !posicaoRobo(j, i - 1))
+                    	setPosicaoEsquerda(j, i);
+                
                 
                 // /\
-                try{
-                    if((matriz[j - 1][i] == 0 || (matriz[j - 1][i] > valor + 1))  && !posicaoRobo(j - 1, i))
-                        matriz[j - 1][i] = matriz[j][i] + 1;
-                } catch(Exception ex){                    
-                }   
+                
+                    if((getPosicaoAcima(j, i) == 0 || (getPosicaoAcima(j, i) > valor + 1))  && !posicaoRobo(j - 1, i))
+                    	setPosicaoAcima(j, i);
+                   
                 valor++;
             }
         }            
     }
 
-	
+	public static void percorreCaminho(int linha, int coluna){
+		int posicao = 0;
+		while (posicao != ORIGEM) {
+						
+			// >>
+			if ( getPosicaoDireita(linha, coluna) != OBSTACULO &&
+				 getPosicaoDireita(linha, coluna) <= getPosicaoAbaixo(linha, coluna) &&
+				 getPosicaoDireita(linha, coluna) <= getPosicaoEsquerda(linha, coluna) &&
+				 getPosicaoDireita(linha, coluna) <= getPosicaoAcima(linha, coluna) ) 
+			{
+				posicao = getPosicaoDireita(linha, coluna);
+				// move robo para direita
+			} 
+			// \/
+			else if ( getPosicaoAbaixo(linha, coluna) != OBSTACULO &&
+					  getPosicaoAbaixo(linha, coluna) <= getPosicaoEsquerda(linha, coluna) &&
+					  getPosicaoAbaixo(linha, coluna) <= getPosicaoAcima(linha, coluna) )				
+			{
+				posicao = getPosicaoAbaixo(linha, coluna);
+				// move robo para abaixo
+			}
+			// <<			
+			else if ( getPosicaoEsquerda(linha, coluna) != OBSTACULO &&
+					  getPosicaoEsquerda(linha, coluna) <= getPosicaoAcima(linha, coluna) )				
+			{
+				posicao = getPosicaoEsquerda(linha, coluna);
+				// move robo para esquerda
+			}
+			// /\			
+			else if ( getPosicaoAcima(linha, coluna) != OBSTACULO )
+			{
+				posicao = getPosicaoAcima(linha, coluna);
+				// move robo para acima
+			}				
+				
+				
+		}
+		
+	}
 	
 }
 
