@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 
 public class Main {
 
@@ -8,6 +10,8 @@ public class Main {
 	private static final int OBSTACULO = -1;
 	
 	private static int[][] matriz = new int[LINHA][COLUNA];
+	
+	private static ArrayList<int[]> trapezoides = new ArrayList<int[]>();
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -359,6 +363,39 @@ public class Main {
 				
 		}
 		
+	}
+	
+	public static void cenarioATrapezoide(){
+		cenarioA();
+		
+		int[] trapezoide;
+		int ponto;
+		//Identificar os trapezoides
+		for (int i = 0; i < matriz[0].length; i++) { //coluna
+			ponto = 0;
+			for (int j = 0; j < matriz.length; j++) { //linha
+				
+				if(matriz[j][i] == -1 || (j == matriz.length - 1 && matriz[j][i] != -1)){
+					trapezoide = new int[2];
+					trapezoide[0] = i; //Coluna do trapezoide
+					trapezoide[1] = (j + ponto) / 2; //Ponto medio do trapezoide
+					ponto = j + 1;
+					if(matriz[trapezoide[1]][trapezoide[0]] != -1){
+						trapezoides.add(trapezoide);
+					}
+					
+				}
+			}
+		}
+		
+		showConsole();
+		
+		for (int[] ptMedio : trapezoides) {
+			for (int i = 0; i < ptMedio.length; i++) {
+				System.out.print(ptMedio[i] + ";");
+			}
+			System.out.println();
+		}	
 	}
 	
 }
