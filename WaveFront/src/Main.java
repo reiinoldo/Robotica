@@ -462,10 +462,7 @@ public class Main {
 					
 					//Quando o ponto médio nao for -1 ele é valido
 					if(matriz[pontoMedio[1]][pontoMedio[0]] != -1)
-						pontosMedios.add(pontoMedio);
-					
-				} else if(centroProxColuna[0] > centro[0] + 1){
-					break;
+						pontosMedios.add(pontoMedio);					
 				}
 			}
 		}
@@ -475,16 +472,15 @@ public class Main {
 	}
 	
 	public static void buscaEmLargura(int linhaO, int colunaO){
-		Stack<int[]> fila = new Stack<int[]>();
+		Stack<int[]> pilha = new Stack<int[]>();
 		
 		int[] robo = new int[3];
 		robo[0] = colunaO;
 		robo[1] = linhaO;
 		robo[2] = CINZA;
 		
-		fila.addElement(robo);
-		int[][] grafoCaminho = new int[LINHA][COLUNA];
-		int[][] menorCaminho = new int[2][COLUNA];
+		pilha.addElement(robo);
+		int[][] grafoCaminho = new int[LINHA][COLUNA];		
 		
 		for (int i = 0; i < grafoCaminho.length; i++) {
 			for (int j = 0; j < grafoCaminho[0].length; j++) {
@@ -503,8 +499,6 @@ public class Main {
 			vertice[2] = BRANCO;
 			
 			if(pontoSemSaida(vertice[1], vertice[0]) == false){
-				System.out.print(vertice[0] + ";");
-				System.out.println(vertice[1] + ";");
 				vertices.add(vertice);
 			}				
 		}
@@ -517,29 +511,69 @@ public class Main {
 			vertice[2] = BRANCO;
 			
 			if(pontoSemSaida(vertice[1], vertice[0]) == false){
-				System.out.print(vertice[0] + ";");
-				System.out.println(vertice[1] + ";");
 				vertices.add(vertice);
 			}	
 		}		
 		
-		while(fila.size() > 0){
-			int[] vertice = (int[]) fila.pop();
+		while(pilha.size() > 0){
+			int[] vertice = (int[]) pilha.pop();
 			for (int[] vAdj : vertices) {
 				//Se os vertices forem adjacentes
 				if(vAdj[0] == vertice[0] + 1 && vAdj[2] == BRANCO){
-					fila.push(vAdj);
-					grafoCaminho[vAdj[1]][vAdj[0]] = distancia; // + Math.abs(vertice[1] - vAdj[1]);
+					pilha.push(vAdj);
+					grafoCaminho[vAdj[1]][vAdj[0]] = distancia;
 					vAdj[2] = CINZA;
-				} else if(vAdj[0] > vertice[0] + 1){
-					break;
 				}
 			}
 			vertice[2] = PRETO;
 			distancia ++;
+		}		
+		
+		//Inicializando Dijkstra
+		int[][] matrizDijkstra = new int[LINHA][COLUNA];
+		int[][] menorCaminho = new int[LINHA][2];
+		
+		for (int i = 0; i < matrizDijkstra.length; i++) {
+			for (int j = 0; j < matrizDijkstra[0].length; j++) {
+				matrizDijkstra[i][j] =  Integer.MAX_VALUE;
+			}
 		}
-		System.out.println();
-		showConsole2(grafoCaminho);
+		
+		matrizDijkstra[linhaO][colunaO] = 0;
+		int[] vertice;
+		int menorValor;
+			
+		//Extraindo menor vertice
+		for (int i = 0; i < matrizDijkstra[0].length; i++) {
+			
+			vertice = new int[2];
+			menorValor = Integer.MAX_VALUE;
+			
+			for (int j = 0; j < matrizDijkstra.length; j++) {
+				if(matrizDijkstra[j][i] < menorValor){
+					menorValor = matrizDijkstra[j][i];
+					vertice[0] = i;
+					vertice[1] = j;
+				}
+			}
+			
+			//Vertice Pai daquela coluna
+			menorCaminho[i][0] = vertice[1];
+			menorCaminho[i][1] = vertice[0];			
+				
+			for (int[] vAdj : vertices) {
+				//Se os vertices forem adjacentes
+				if(vAdj[0] == vertice[0] + 1){
+					//RELAX
+					if(matrizDijkstra[vAdj[1]][vAdj[0]] > menorValor + 1 + Math.abs(vertice[1] - vAdj[1])){						
+						matrizDijkstra[vAdj[1]][vAdj[0]] = menorValor + 1 + Math.abs(vertice[1] - vAdj[1]);
+					}
+				}
+			}
+		}
+		
+		showConsole2(menorCaminho);
+
 	}
 	
 	private static boolean pontoSemSaida(int linha, int coluna){
@@ -558,7 +592,7 @@ public class Main {
 		}
 		
 		try{
-			//para para baixa
+			//para para baixo
 			if(matriz[linha + 1][coluna] != -1)
 				return false;
 		} catch (Exception e) {
