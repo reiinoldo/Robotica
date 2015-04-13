@@ -27,7 +27,8 @@ public class Main {
 		// cenario2(); +- 
 		// cenarioA();
 		//cenarioB();
-		cenarioATrapezoide();
+		//cenarioATrapezoide();
+		cenarioBTrapezoide();
 	}
 	
 	public static void cenarioA(){
@@ -467,16 +468,16 @@ public class Main {
 			}
 		}
 		
-		buscaEmLargura(6, 0);
+		buscaEmLargura(6, 0, 2, 5);
 		
 	}
 	
-	public static void buscaEmLargura(int linhaO, int colunaO){
+	public static void buscaEmLargura(int linhaRobo, int colunaRobo, int linhaObjetivo, int colunaObjetivo){
 		Stack<int[]> pilha = new Stack<int[]>();
 		
 		int[] robo = new int[3];
-		robo[0] = colunaO;
-		robo[1] = linhaO;
+		robo[0] = colunaRobo;
+		robo[1] = linhaRobo;
 		robo[2] = CINZA;
 		
 		pilha.addElement(robo);
@@ -487,7 +488,7 @@ public class Main {
 				grafoCaminho[i][j] = -1;
 			}
 		}
-		grafoCaminho[linhaO][colunaO] = 0;
+		grafoCaminho[linhaRobo][colunaRobo] = 0;
 		
 		int distancia = 1;
 		
@@ -539,7 +540,7 @@ public class Main {
 			}
 		}
 		
-		matrizDijkstra[linhaO][colunaO] = 0;
+		matrizDijkstra[linhaRobo][colunaRobo] = 0;
 		int[] vertice;
 		int menorValor;
 			
@@ -572,7 +573,11 @@ public class Main {
 			}
 		}
 		
+		menorCaminho[6][0] = linhaObjetivo;
+		menorCaminho[6][1] = colunaObjetivo;
 		showConsole2(menorCaminho);
+		
+		percorreCaminhoTrapezoide(menorCaminho);
 
 	}
 	
@@ -599,6 +604,166 @@ public class Main {
 		}
 		return true;
 	}
+	
+	public static void percorreCaminhoTrapezoide(int[][] caminho){
+		int vertical = 0;
+		int horizontal = 0;
+		
+		for (int i = 1; i < caminho.length; i++) {
+
+			vertical = caminho[i][0] - caminho[i -1][0];
+			horizontal = caminho[i][1] - caminho[i -1][1];
+			/*System.out.print("i: " + i);
+			System.out.print("  Vert: " + vertical );
+			System.out.println("  Hor: " + horizontal);*/
+			
+			
+			if(frenteCima(horizontal, vertical, caminho[i -1][0], caminho[i -1][1], false)){
+				frenteCima(horizontal, vertical, caminho[i -1][0], caminho[i -1][1], true);
+			} else{
+				cimaFrente(horizontal, vertical, caminho[i -1][0], caminho[i -1][1], true);
+			}
+
+		}
+	}
+	
+	public static boolean frenteCima(int qtdFrente, int qtdCima, int linhaOrigem, int colOrigem, boolean impRota){
+		for (int i = 1; i <= qtdFrente; i++) {
+			if(matriz[linhaOrigem][colOrigem + i] == -1)
+				return false;
+			if(impRota){
+				System.out.println("Frente");
+			}
+		}
+		colOrigem += qtdFrente;
+
+		if(qtdCima > 0){
+			for (int i = 1; i <= qtdCima; i++) {
+				if(matriz[linhaOrigem + i][colOrigem] == -1)
+					return false;
+				if(impRota){
+					System.out.println("Baixo");
+				}
+			}				
+		} else{
+			qtdCima = qtdCima * -1;
+			for (int i = 1; i <= qtdCima; i++) {
+				if(matriz[linhaOrigem - i][colOrigem] == -1)
+					return false;
+				if(impRota){
+					System.out.println("Cima");
+				}				
+			}
+		}
+		return true;
+	}
+	
+	public static boolean cimaFrente(int qtdFrente, int qtdCima, int linhaOrigem, int colOrigem, boolean impRota){
+		boolean cima = true;
+		if(qtdCima < 0){
+			qtdCima = qtdCima * -1;
+			cima = false;
+		}
+		
+		for (int i = 0; i < qtdCima; i++) {
+			if(cima == true){
+				if(matriz[linhaOrigem + i][colOrigem] == -1)
+					return false;
+				if(impRota){
+					System.out.println("Baixo");
+				}
+			} else{
+				if(matriz[linhaOrigem - i][colOrigem] == -1)
+					return false;
+				
+				if(impRota){
+					System.out.println("Cima");
+				}				
+			}
+		}
+		
+		for (int i = 1; i <= qtdFrente; i++) {
+			if(impRota){
+				System.out.println("Frente");
+			}
+		}	
+		
+		return true;
+	}
+	
+	public static void cenarioBTrapezoide(){		
+		//Teste
+		int[] trapezoide;
+		int ponto;
+		
+		// iniciar obstaculos | Linha X Coluna		
+		matriz[1][2] = OBSTACULO;
+		matriz[2][3] = OBSTACULO;
+		matriz[3][1] = OBSTACULO;
+		matriz[3][4] = OBSTACULO;
+		matriz[4][2] = OBSTACULO;		
+		matriz[5][4] = OBSTACULO;		
+		matriz[6][3] = OBSTACULO;		
+		
+		// iniciar objetivo
+		matriz[6][5] = ORIGEM;
+		
+		// iniciar robo
+		matriz[3][0] = ROBO;
+		
+		//Identificar os trapezoides
+		for (int i = 0; i < matriz[0].length; i++) { //coluna
+			ponto = 0;
+			for (int j = 0; j < matriz.length; j++) { //linha
+				
+				if(matriz[j][i] == -1 || (j == matriz.length - 1 && matriz[j][i] != -1)){
+					trapezoide = new int[4];
+					trapezoide[0] = i;                    //Coluna do trapezoide
+					trapezoide[CENTRO] = (j + ponto) / 2; //Centro do trapezoide
+					trapezoide[INI] = ponto;              //Inicio do trapezoide
+					trapezoide[FIM] = j;                  //Fim do trapezoide
+					ponto = j + 1;
+					
+					//Quando o centro do trapezoide nao for -1, ele é valido
+					if(matriz[trapezoide[1]][trapezoide[0]] != -1){
+						trapezoides.add(trapezoide);
+					}
+					
+				}
+			}
+		}
+		
+		//showConsole();
+		int[] pontoMedio;
+		
+		for (int[] centro : trapezoides) {						
+			for (int[] centroProxColuna : trapezoides) {
+				//Proxima coluna, com a qual devem ser encontrados os vertices
+				if(centroProxColuna[0] == centro[0] + 1){
+					int iniInterseccao = centro[INI];
+					if(centroProxColuna[INI] > iniInterseccao){
+						iniInterseccao = centroProxColuna[INI];
+					}
+					
+					int fimInterseccao = centro[FIM];
+					if(centroProxColuna[FIM] < fimInterseccao){
+						fimInterseccao = centroProxColuna[FIM];
+					}
+					
+					pontoMedio = new int[2];
+					pontoMedio[0] = centroProxColuna[0];
+					pontoMedio[1] = (iniInterseccao + fimInterseccao) / 2; //Ponto medio entre os 2 trapezoides
+					
+					//Quando o ponto médio nao for -1 ele é valido
+					if(matriz[pontoMedio[1]][pontoMedio[0]] != -1)
+						pontosMedios.add(pontoMedio);					
+				}
+			}
+		}
+		
+		buscaEmLargura(3, 0, 6, 5);
+		
+	}	
 	
 }
 
