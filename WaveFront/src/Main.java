@@ -499,7 +499,7 @@ public class Main {
 			vertice[1] = listVertice[1];
 			vertice[2] = BRANCO;
 			
-			if(pontoSemSaida(vertice[1], vertice[0]) == false){
+			if(pontoSemSaida(vertice[1], vertice[0]) == false && pontoSemEntrada(vertice[1], vertice[0]) == false){
 				vertices.add(vertice);
 			}				
 		}
@@ -511,7 +511,7 @@ public class Main {
 			vertice[1] = listVertice[1];
 			vertice[2] = BRANCO;
 			
-			if(pontoSemSaida(vertice[1], vertice[0]) == false){
+			if(pontoSemSaida(vertice[1], vertice[0]) == false && pontoSemEntrada(vertice[1], vertice[0]) == false){
 				vertices.add(vertice);
 			}	
 		}		
@@ -566,8 +566,8 @@ public class Main {
 				//Se os vertices forem adjacentes
 				if(vAdj[0] == vertice[0] + 1){
 					//RELAX
-					if(matrizDijkstra[vAdj[1]][vAdj[0]] > menorValor + 1 + Math.abs(vertice[1] - vAdj[1])){						
-						matrizDijkstra[vAdj[1]][vAdj[0]] = menorValor + 1 + Math.abs(vertice[1] - vAdj[1]);
+					if(matrizDijkstra[vAdj[1]][vAdj[0]] > menorValor + 1 + (Math.abs(vertice[1] - vAdj[1]) * 2) + Math.abs(linhaObjetivo - vAdj[1])){						
+						matrizDijkstra[vAdj[1]][vAdj[0]] = menorValor + 1 + (Math.abs(vertice[1] - vAdj[1]) * 2) + Math.abs(linhaObjetivo - vAdj[1]);
 					}
 				}
 			}
@@ -592,6 +592,30 @@ public class Main {
 		try{
 			//para frente
 			if(matriz[linha][coluna + 1] != -1)
+				return false;
+		} catch (Exception e) {
+		}
+		
+		try{
+			//para para baixo
+			if(matriz[linha + 1][coluna] != -1)
+				return false;
+		} catch (Exception e) {
+		}
+		return true;
+	}
+	
+	private static boolean pontoSemEntrada(int linha, int coluna){
+		try{
+			//para cima
+			if(matriz[linha - 1][coluna] != -1)
+				return false;
+		} catch (Exception e) {
+		}
+		
+		try{
+			//para frente
+			if(matriz[linha][coluna - 1] != -1)
 				return false;
 		} catch (Exception e) {
 		}
